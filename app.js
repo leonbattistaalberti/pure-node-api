@@ -14,8 +14,7 @@ const server = http.createServer((req, res) => {
 	let queryObject = parsedUrl.query
 
 	let method = req.method.toUpperCase(); //toUpperCase is used to force the method to uppercase (not necessary)
-	console.log(`path: ${cleanPath}`);
-	console.log(`method: ${method}`);
+	console.log(req.headers)
 	//console.log(parsedUrl.query)
 	res.end(`Here's Johnny`);
 });
