@@ -10,6 +10,9 @@ const server = http.createServer((req, res) => {
 	let path = parsedUrl.pathname;
 	// clean the path
 	let cleanPath = path.replace(/^\/+|\/+$/g, '');
+	let method = req.method.toUpperCase(); //toUpperCase is used to force the method to uppercase (not necessary)
+	console.log(`path: ${cleanPath}`);
+	console.log(`method: ${method}`);
 	res.end(`Here's Johnny`);
 });
 
