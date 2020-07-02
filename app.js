@@ -4,6 +4,8 @@ const {
     StringDecoder
 } = require('string_decoder')
 
+const config = require('./config')
+
 // use http to create a server
 const server = http.createServer((req, res) => {
     // get pathname
@@ -37,8 +39,7 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
         buffer += decoder.end();
         // choose handler 
-        console.log(router[cleanPath])
-            // if there is no handler send to handler.notFound else 
+        // if there is no handler send to handler.notFound else 
         let requestUrlHandler = typeof(router[cleanPath]) === 'undefined' ? handlers.notFound : router[cleanPath]
             // data to be sent 
         let data = {
@@ -61,6 +62,8 @@ const server = http.createServer((req, res) => {
             // create payload 
             let responseString = JSON.stringify(payload)
 
+            // send payload as json
+            res.setHeader('content-type', 'application/json')
             // write status code header to the response
             res.writeHead(statusCode);
 
@@ -68,16 +71,16 @@ const server = http.createServer((req, res) => {
             res.end(responseString);
 
             // once the data has ended log the buffer and show message
-            console.log(responseString)
+            console.log(`Status Code: ${statusCode} :: ${responseString}`)
         });
     });
 });
 
-const port = 3000;
+const port = config.port;
 
 // listen on port 3000
 server.listen(port, () => {
-    console.log(`Server started on ${port}`);
+    console.log(`Server started on ${port} in ${config.envName}`);
 });
 
 // request handler 
