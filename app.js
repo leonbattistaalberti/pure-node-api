@@ -1,4 +1,3 @@
-// require http module
 const http = require('http');
 const url = require('url');
 const {StringDecoder} = require('string_decoder')
@@ -12,10 +11,13 @@ const server = http.createServer((req, res) => {
 	// clean the path
 	let cleanPath = path.replace(/^\/+|\/+$/g, '');
 
+	// get query string 
 	let queryObject = parsedUrl.query
 
+	// get http headers
 	let headers = req.headers
 
+	// get http method
 	let method = req.method.toUpperCase(); //toUpperCase is used to force the method to uppercase (not necessary)
 
 	// create a decoder that will convert the bytes of array into utf-8 string
@@ -40,10 +42,9 @@ const server = http.createServer((req, res) => {
 
 });
 
-
-
 const port = 3000;
 
+// listen on port 3000
 server.listen(port, () => {
 	console.log(`Server started on ${port}`);
 });
