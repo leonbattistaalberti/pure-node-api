@@ -1,6 +1,7 @@
 // require http module
 const http = require('http');
 const url = require('url');
+const {StringDecoder} = require('string_decoder')
 
 // use http to create a server
 const server = http.createServer((req, res) => {
@@ -16,9 +17,27 @@ const server = http.createServer((req, res) => {
 	let headers = req.headers
 
 	let method = req.method.toUpperCase(); //toUpperCase is used to force the method to uppercase (not necessary)
-	console.log(headers)
-	//console.log(parsedUrl.query)
-	res.end(`Here's Johnny`);
+
+	// create a decoder that will convert the bytes of array into utf-8 string
+	let decoder = new StringDecoder('utf-8')
+	
+	// create empty buffer for holding the incoming stream of bytes
+	let buffer = ''
+
+	// on event emmit call get the incoming data and append to buffer
+	req.on('data', (data) => {
+		buffer += decoder.write(data)
+	});
+
+	// if incoming data has ended or there is no data
+	req.on('end', ()=> {
+		buffer += decoder.end();
+		// once the data has ended log the buffer and show message
+		console.log(buffer)
+		res.end(`Here's Johnny`);
+	})
+
+
 });
 
 
