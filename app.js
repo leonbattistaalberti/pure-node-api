@@ -1,13 +1,73 @@
 const http = require('http');
+const https = require('https')
 const url = require('url');
 const {
     StringDecoder
 } = require('string_decoder')
-
 const config = require('./config')
+const fs = require('fs')
 
 // use http to create a server
-const server = http.createServer((req, res) => {
+const httpServer = http.createServer((req, res) => {
+    mainServer(req, res)
+});
+
+// create https server options with SSL key and certificate
+let httpsServerOptions = {
+	key: fs.readFileSync('./https/key.pm'),
+	cert: fs.readFileSync('./https/cert.pm')
+}
+
+// HTTPS server
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+    mainServer(req, res)
+});
+
+// listen on http port
+httpServer.listen(config.httpPort, () => {
+    console.log(`Server started on ${config.httpPort} in ${config.envName}`);
+});
+
+// listen on https port
+httpsServer.listen(config.httpsPort, () => {
+    console.log(`Server started on ${config.httpsPort} in ${config.envName}`);
+});
+
+
+// request handler 
+
+let handlers = {};
+
+
+// sample route handler
+handlers.sample = (data, callback) => {
+    //callback http status and the payload if there is one
+    callback(406, {
+        'name': 'sample handler'
+    })
+};
+
+// films route handler
+handlers.films = (data, callback) => {
+    callback(406, {
+        films: ['blue velvet', 'twin peaks']
+    })
+}
+
+// Not Found handler
+handlers.notFound = (data, callback) => {
+    callback(404)
+    console.log('Not Found')
+};
+
+let router = {
+    'sample': handlers.sample,
+    "films": handlers.films
+};
+
+// combined server function 
+
+let mainServer = (req, res) => {
     // get pathname
     let parsedUrl = url.parse(req.url, true); // true calls the queryString method
 
@@ -64,7 +124,7 @@ const server = http.createServer((req, res) => {
 
             // send payload as json
             res.setHeader('content-type', 'application/json')
-            // write status code header to the response
+                // write status code header to the response
             res.writeHead(statusCode);
 
             // send payload to the user
@@ -74,42 +134,5 @@ const server = http.createServer((req, res) => {
             console.log(`Status Code: ${statusCode} :: ${responseString}`)
         });
     });
-});
 
-const port = config.port;
-
-// listen on port 3000
-server.listen(port, () => {
-    console.log(`Server started on ${port} in ${config.envName}`);
-});
-
-// request handler 
-
-let handlers = {};
-
-
-// sample route handler
-handlers.sample = (data, callback) => {
-    //callback http status and the payload if there is one
-    callback(406, {
-        'name': 'sample handler'
-    })
-};
-
-// films route handler
-handlers.films = (data, callback) => {
-    callback(406, {
-        films: ['blue velvet', 'twin peaks']
-    })
 }
-
-// Not Found handler
-handlers.notFound = (data, callback) => {
-    callback(404)
-    console.log('Not Found')
-};
-
-let router = {
-    'sample': handlers.sample,
-    "films": handlers.films
-};
