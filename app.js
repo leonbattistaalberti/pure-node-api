@@ -14,8 +14,8 @@ const httpServer = http.createServer((req, res) => {
 
 // create https server options with SSL key and certificate
 let httpsServerOptions = {
-	key: fs.readFileSync('./https/key.pm'),
-	cert: fs.readFileSync('./https/cert.pm')
+    key: fs.readFileSync('./https/key.pm'),
+    cert: fs.readFileSync('./https/cert.pm')
 }
 
 // HTTPS server
@@ -39,12 +39,10 @@ httpsServer.listen(config.httpsPort, () => {
 let handlers = {};
 
 
-// sample route handler
-handlers.sample = (data, callback) => {
+// ping route handler
+handlers.ping = (data, callback) => {
     //callback http status and the payload if there is one
-    callback(406, {
-        'name': 'sample handler'
-    })
+    callback(200)
 };
 
 // films route handler
@@ -61,12 +59,11 @@ handlers.notFound = (data, callback) => {
 };
 
 let router = {
-    'sample': handlers.sample,
+    'ping': handlers.ping,
     "films": handlers.films
 };
 
 // combined server function 
-
 let mainServer = (req, res) => {
     // get pathname
     let parsedUrl = url.parse(req.url, true); // true calls the queryString method
