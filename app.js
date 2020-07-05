@@ -6,11 +6,11 @@ const config = require("./config");
 const fs = require("fs");
 const _data = require("./lib/data");
 
-_data.read("test", "file", (err, data) => {
+_data.delete("test", "file", (err) => {
   if (!err) {
-    console.log(data);
-  } else {
     console.log(`Encountered error: ${err}`);
+  } else {
+    console.log(err);
   }
 });
 
