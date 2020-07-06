@@ -5,6 +5,7 @@ const { StringDecoder } = require("string_decoder");
 const config = require("./config");
 const fs = require("fs");
 const _data = require("./lib/data");
+const handlers = require("./lib/handlers");
 
 _data.delete("test", "file", (err) => {
   if (!err) {
@@ -40,23 +41,6 @@ httpsServer.listen(config.httpsPort, () => {
   console.log(`Server started on ${config.httpsPort} in ${config.envName}`);
 });
 
-// request handler
-
-let handlers = {};
-
-// ping route handler
-handlers.ping = (data, callback) => {
-  //callback http status and the payload if there is one
-  callback(200);
-};
-
-// films route handler
-handlers.films = (data, callback) => {
-  callback(406, {
-    films: ["blue velvet", "twin peaks"],
-  });
-};
-
 // Not Found handler
 handlers.notFound = (data, callback) => {
   callback(404);
@@ -66,6 +50,7 @@ handlers.notFound = (data, callback) => {
 let router = {
   ping: handlers.ping,
   films: handlers.films,
+  users: handlers.users,
 };
 
 // combined server function
