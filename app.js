@@ -41,7 +41,6 @@ httpServer.listen(config.httpPort, () => {
 httpsServer.listen(config.httpsPort, () => {
   console.log(`Server started on ${config.httpsPort} in ${config.envName}`);
 });
-
 // Not Found handler
 handlers.notFound = (data, callback) => {
   callback(404);
@@ -70,7 +69,7 @@ let mainServer = (req, res) => {
   let headers = req.headers;
 
   // get http method
-  let method = req.method.toUpperCase(); //toUpperCase is used to force the method to uppercase (not necessary)
+  let method = req.method.toLowerCase(); //toUpperCase is used to force the method to uppercase (not necessary)
 
   // create a decoder that will convert the bytes of array into utf-8 string
   let decoder = new StringDecoder("utf-8");
@@ -92,6 +91,7 @@ let mainServer = (req, res) => {
       typeof router[cleanPath] === "undefined"
         ? handlers.notFound
         : router[cleanPath];
+    console.log(requestUrlHandler);
     // data to be sent
     let data = {
       path: cleanPath,
