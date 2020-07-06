@@ -6,6 +6,7 @@ const config = require("./config");
 const fs = require("fs");
 const _data = require("./lib/data");
 const handlers = require("./lib/handlers");
+const helpers = require("./lib/helpers");
 
 _data.delete("test", "file", (err) => {
   if (!err) {
@@ -97,7 +98,7 @@ let mainServer = (req, res) => {
       queryStringObject: queryObject,
       method: method,
       headers: headers,
-      payload: buffer,
+      payload: helpers.parseJsonToObject(buffer),
     };
 
     // send above data to the handler
