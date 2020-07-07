@@ -51,6 +51,7 @@ let router = {
   ping: handlers.ping,
   films: handlers.films,
   users: handlers.users,
+  token: handlers.token,
 };
 
 // combined server function
